@@ -1,6 +1,6 @@
 node-agent-base
 ===============
-### An HTTP(s) proxy `http.Agent` implementation for HTTP endpoints
+### An HTTP(s) proxy `http.Agent` implementation for HTTP
 
 This module provides an `http.Agent` implementation that connects to a specified
 HTTP or HTTPS proxy server, and can be used with the built-in `http` module.

@@ -1,7 +1,7 @@
 {
   "name": "http-proxy-agent",
   "version": "0.0.0",
-  "description": "An HTTP(s) proxy `http.Agent` implementation for HTTP endpoints",
+  "description": "An HTTP(s) proxy `http.Agent` implementation for HTTP",
   "main": "http-proxy-agent.js",
   "scripts": {
     "test": "mocha --reporter spec"
