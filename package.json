@@ -1,0 +1,30 @@
+{
+  "name": "http-proxy-agent",
+  "version": "0.0.0",
+  "description": "An HTTP(s) proxy `http.Agent` implementation for HTTP endpoints",
+  "main": "http-proxy-agent.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TooTallNate/node-http-proxy-agent.git"
+  },
+  "keywords": [
+    "http",
+    "proxy",
+    "endpoint",
+    "agent"
+  ],
+  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TooTallNate/node-http-proxy-agent/issues"
+  },
+  "dependencies": {
+    "agent-base": "~0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0"
+  }
+}
