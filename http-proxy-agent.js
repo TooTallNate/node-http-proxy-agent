@@ -25,9 +25,24 @@ module.exports = HttpProxyAgent;
 function HttpProxyAgent (opts) {
   if (!(this instanceof HttpProxyAgent)) return new HttpProxyAgent(opts);
   if ('string' == typeof opts) opts = url.parse(opts);
+  if (!opts) throw new Error('an HTTP(S) proxy server `host` and `port` must be specified!');
+  var proxy = clone(opts, {});
   Agent.call(this);
-  this.proxy = opts;
-  this.secure = this.proxy.protocol && this.proxy.protocol == 'https:';
+
+  this.secure = proxy.protocol && proxy.protocol == 'https:';
+
+  // prefer `hostname` over `host`, and set the `port` if needed
+  proxy.host = proxy.hostname || proxy.host;
+  proxy.port = +proxy.port || (this.secure ? 443 : 80);
+
+  if (proxy.host && proxy.path) {
+    // if both a `host` and `path` are specified then it's most likely the
+    // result of a `url.parse()` call... we need to remove the `path` portion so
+    // that `net.connect()` doesn't attempt to open that as a unix socket file.
+    delete proxy.path;
+  }
+
+  this.proxy = proxy;
 }
 inherits(HttpProxyAgent, Agent);
 
@@ -72,16 +87,17 @@ HttpProxyAgent.prototype.addRequest = function (req, host, port, localAddress) {
 
 HttpProxyAgent.prototype.createConnection = function (opts, fn) {
   var socket;
-  var info = {
-    host: this.proxy.hostname || this.proxy.host,
-    port: +this.proxy.port || (this.secure ? 443 : 80)
-  };
   if (this.secure) {
-    socket = tls.connect(info);
+    socket = tls.connect(this.proxy);
   } else {
-    socket = net.connect(info);
+    socket = net.connect(this.proxy);
   }
 
   fn(null, socket);
   return socket;
 };
+
+function clone (src, dest) {
+  for (var i in src) dest[i] = src[i];
+  return dest;
+}
