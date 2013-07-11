@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var net = require('net');
 var url = require('url');
 var http = require('http');
 var assert = require('assert');
@@ -36,8 +37,12 @@ describe('HttpProxyAgent', function () {
       });
       res.on('end', function () {
         data = JSON.parse(data);
-        //assert.equal('tootallnate', data.username);
-        console.log(data);
+        assert('ip' in data);
+        var ips = data.ip.split(/\,\s*/g);
+        assert(ips.length >= 1);
+        ips.forEach(function (ip) {
+          assert(net.isIP(ip));
+        });
         done();
       });
     });
@@ -51,7 +56,6 @@ describe('HttpProxyAgent', function () {
 
     var opts = url.parse(link);
     opts.agent = agent;
-    opts.rejectUnauthorized = false;
 
     http.get(opts, function (res) {
       var data = '';
@@ -61,8 +65,12 @@ describe('HttpProxyAgent', function () {
       });
       res.on('end', function () {
         data = JSON.parse(data);
-        //assert.equal('tootallnate', data.username);
-        console.log(data);
+        assert('ip' in data);
+        var ips = data.ip.split(/\,\s*/g);
+        assert(ips.length >= 1);
+        ips.forEach(function (ip) {
+          assert(net.isIP(ip));
+        });
         done();
       });
     });
