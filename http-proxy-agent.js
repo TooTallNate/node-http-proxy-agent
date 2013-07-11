@@ -67,7 +67,7 @@ HttpProxyAgent.prototype.addRequest = function (req, host, port, localAddress) {
 /**
  * Initiates a TCP connection to the specified HTTP proxy server.
  *
- * @api public
+ * @api protected
  */
 
 HttpProxyAgent.prototype.createConnection = function (opts, fn) {
