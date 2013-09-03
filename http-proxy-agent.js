@@ -76,6 +76,12 @@ HttpProxyAgent.prototype.addRequest = function (req, host, port, localAddress) {
   });
   req.path = absolute;
 
+  // inject the `Proxy-Authorization` header if necessary
+  var auth = this.proxy.auth;
+  if (auth) {
+    req.setHeader('Proxy-Authorization', 'Basic ' + new Buffer(auth).toString('base64'));
+  }
+
   Agent.prototype.addRequest.apply(this, arguments);
 };
 
