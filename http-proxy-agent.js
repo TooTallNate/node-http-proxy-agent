@@ -55,6 +55,7 @@ inherits(HttpProxyAgent, Agent);
  */
 
 function connect (req, opts, fn) {
+  if (null == opts.port) opts.port = 80;
 
   // change the `http.ClientRequest` instance's "path" field
   // to the absolute path of the URL that will be requested
