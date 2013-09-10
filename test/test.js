@@ -167,6 +167,41 @@ describe('HttpProxyAgent', function () {
         done();
       });
     });
+    it('should send the "Proxy-Authorization" request header', function (done) {
+      // set a proxy authentication function for this test
+      proxy.authenticate = function (req, fn) {
+        // username:password is "foo:bar"
+        fn(null, req.headers['proxy-authorization'] == 'Basic Zm9vOmJhcg==');
+      };
+
+      // set HTTP "request" event handler for this test
+      server.once('request', function (req, res) {
+        res.end(JSON.stringify(req.headers));
+      });
+
+      var proxyUri = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+      var proxyOpts = url.parse(proxyUri);
+      proxyOpts.auth = 'foo:bar';
+      var agent = new HttpProxyAgent(proxyOpts);
+
+      var opts = url.parse('http://127.0.0.1:' + serverPort);
+      opts.agent = agent;
+
+      http.get(opts, function (res) {
+        var data = '';
+        res.setEncoding('utf8');
+        res.on('data', function (b) {
+          data += b;
+        });
+        res.on('end', function () {
+          data = JSON.parse(data);
+          assert.equal('127.0.0.1:' + serverPort, data.host);
+          assert('via' in data);
+          delete proxy.authenticate;
+          done();
+        });
+      });
+    });
   });
 
 });
