@@ -144,6 +144,29 @@ describe('HttpProxyAgent', function () {
         });
       });
     });
+    it('should receive the 407 authorization code on the `http.ClientResponse`', function (done) {
+      // set a proxy authentication function for this test
+      proxy.authenticate = function (req, fn) {
+        // reject all requests
+        fn(null, false);
+      };
+
+      var proxyUri = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+      var agent = new HttpProxyAgent(proxyUri);
+
+      var opts = {};
+      // `host` and `port` don't really matter since the proxy will reject anyways
+      opts.host = '127.0.0.1';
+      opts.port = 80;
+      opts.agent = agent;
+
+      http.get(opts, function (res) {
+        assert.equal(407, res.statusCode);
+        assert('proxy-authenticate' in res.headers);
+        delete proxy.authenticate;
+        done();
+      });
+    });
   });
 
 });
