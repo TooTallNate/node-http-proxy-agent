@@ -27,7 +27,7 @@ function HttpProxyAgent (opts) {
   if ('string' == typeof opts) opts = url.parse(opts);
   if (!opts) throw new Error('an HTTP(S) proxy server `host` and `port` must be specified!');
   var proxy = clone(opts, {});
-  Agent.call(this);
+  Agent.call(this, connect);
 
   this.secure = proxy.protocol && proxy.protocol == 'https:';
 
@@ -52,19 +52,7 @@ inherits(HttpProxyAgent, Agent);
  * @api public
  */
 
-HttpProxyAgent.prototype.addRequest = function (req, host, port, localAddress) {
-  var opts;
-  if ('object' == typeof host) {
-    // >= v0.11.x API
-    opts = host;
-  } else {
-    // <= v0.10.x API
-    opts = {
-      host: host,
-      port: port,
-      localAddress: localAddress
-    };
-  }
+function connect (req, opts, fn) {
 
   // change the `http.ClientRequest` instance's "path" field
   // to the absolute path of the URL that will be requested
@@ -82,16 +70,6 @@ HttpProxyAgent.prototype.addRequest = function (req, host, port, localAddress) {
     req.setHeader('Proxy-Authorization', 'Basic ' + new Buffer(auth).toString('base64'));
   }
 
-  Agent.prototype.addRequest.apply(this, arguments);
-};
-
-/**
- * Initiates a TCP connection to the specified HTTP proxy server.
- *
- * @api protected
- */
-
-HttpProxyAgent.prototype.createConnection = function (opts, fn) {
   var socket;
   if (this.secure) {
     socket = tls.connect(this.proxy);
@@ -100,7 +78,6 @@ HttpProxyAgent.prototype.createConnection = function (opts, fn) {
   }
 
   fn(null, socket);
-  return socket;
 };
 
 function clone (src, dest) {
