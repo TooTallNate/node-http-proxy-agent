@@ -202,6 +202,20 @@ describe('HttpProxyAgent', function () {
         });
       });
     });
+    it('should emit an "error" event on the `http.ClientRequest` if the proxy does not exist', function (done) {
+      var proxyUri = 'http://some.domain.that.could.not.possibly.existttttttttttttttt.com:4444';
+      var agent = new HttpProxyAgent(proxyUri);
+
+      var opts = url.parse('http://nodejs.org');
+      opts.agent = agent;
+
+      var req = http.get(opts);
+      req.once('error', function (err) {
+        assert.equal('ENOTFOUND', err.code);
+        req.abort();
+        done();
+      });
+    });
   });
 
 });
