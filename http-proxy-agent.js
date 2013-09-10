@@ -26,14 +26,16 @@ function HttpProxyAgent (opts) {
   if (!(this instanceof HttpProxyAgent)) return new HttpProxyAgent(opts);
   if ('string' == typeof opts) opts = url.parse(opts);
   if (!opts) throw new Error('an HTTP(S) proxy server `host` and `port` must be specified!');
-  var proxy = clone(opts, {});
   Agent.call(this, connect);
 
-  this.secure = proxy.protocol && proxy.protocol == 'https:';
+  var proxy = clone(opts, {});
+
+  // if `true`, then connect to the proxy server over TLS. defaults to `false`.
+  this.secureProxy = proxy.protocol ? proxy.protocol == 'https:' : false;
 
   // prefer `hostname` over `host`, and set the `port` if needed
   proxy.host = proxy.hostname || proxy.host;
-  proxy.port = +proxy.port || (this.secure ? 443 : 80);
+  proxy.port = +proxy.port || (this.secureProxy ? 443 : 80);
 
   if (proxy.host && proxy.path) {
     // if both a `host` and `path` are specified then it's most likely the
@@ -71,7 +73,7 @@ function connect (req, opts, fn) {
   }
 
   var socket;
-  if (this.secure) {
+  if (this.secureProxy) {
     socket = tls.connect(this.proxy);
   } else {
     socket = net.connect(this.proxy);
