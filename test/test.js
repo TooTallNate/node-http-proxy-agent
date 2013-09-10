@@ -203,7 +203,8 @@ describe('HttpProxyAgent', function () {
       });
     });
     it('should emit an "error" event on the `http.ClientRequest` if the proxy does not exist', function (done) {
-      var proxyUri = 'http://some.domain.that.could.not.possibly.existttttttttttttttt.com:4444';
+      // port 4 is a reserved, but "unassigned" port
+      var proxyUri = 'http://127.0.0.1:4';
       var agent = new HttpProxyAgent(proxyUri);
 
       var opts = url.parse('http://nodejs.org');
@@ -211,7 +212,7 @@ describe('HttpProxyAgent', function () {
 
       var req = http.get(opts);
       req.once('error', function (err) {
-        assert.equal('ENOTFOUND', err.code);
+        assert.equal('ECONNREFUSED', err.code);
         req.abort();
         done();
       });
