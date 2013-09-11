@@ -4,7 +4,6 @@
  */
 
 var fs = require('fs');
-var net = require('net');
 var url = require('url');
 var http = require('http');
 var https = require('https');
