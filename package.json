@@ -22,7 +22,8 @@
     "url": "https://github.com/TooTallNate/node-http-proxy-agent/issues"
   },
   "dependencies": {
-    "agent-base": "~1.0.0"
+    "agent-base": "~1.0.1",
+    "extend": "~1.2.0"
   },
   "devDependencies": {
     "mocha": "~1.12.0",
