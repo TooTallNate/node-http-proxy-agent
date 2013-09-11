@@ -19,8 +19,8 @@ describe('HttpProxyAgent', function () {
   var proxy;
   var proxyPort;
 
-  var ssl;
-  var sslPort;
+  var sslProxy;
+  var sslProxyPort;
 
   before(function (done) {
     // setup HTTP proxy server
@@ -46,9 +46,9 @@ describe('HttpProxyAgent', function () {
       key: fs.readFileSync(__dirname + '/server.key'),
       cert: fs.readFileSync(__dirname + '/server.crt')
     };
-    ssl = Proxy(https.createServer(options));
-    ssl.listen(function () {
-      sslPort = ssl.address().port;
+    sslProxy = Proxy(https.createServer(options));
+    sslProxy.listen(function () {
+      sslProxyPort = sslProxy.address().port;
       done();
     });
   });
@@ -65,8 +65,8 @@ describe('HttpProxyAgent', function () {
   });
 
   after(function (done) {
-    ssl.once('close', function () { done(); });
-    ssl.close();
+    sslProxy.once('close', function () { done(); });
+    sslProxy.close();
   });
 
   describe('constructor', function () {
@@ -121,7 +121,7 @@ describe('HttpProxyAgent', function () {
         res.end(JSON.stringify(req.headers));
       });
 
-      var proxy = process.env.HTTPS_PROXY || process.env.https_proxy || 'https://127.0.0.1:' + sslPort;
+      var proxy = process.env.HTTPS_PROXY || process.env.https_proxy || 'https://127.0.0.1:' + sslProxyPort;
       proxy = url.parse(proxy);
       proxy.rejectUnauthorized = false;
       var agent = new HttpProxyAgent(proxy);
