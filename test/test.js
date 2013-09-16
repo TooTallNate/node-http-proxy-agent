@@ -86,6 +86,20 @@ describe('HttpProxyAgent', function () {
       assert.equal('127.0.0.1', agent.proxy.host);
       assert.equal(proxyPort, agent.proxy.port);
     });
+    describe('secureProxy', function () {
+      it('should default to `false`', function () {
+        var agent = new HttpProxyAgent({ port: proxyPort });
+        assert.equal(false, agent.secureProxy);
+      });
+      it('should be `false` when "http:" protocol is used', function () {
+        var agent = new HttpProxyAgent({ port: proxyPort, protocol: 'http:' });
+        assert.equal(false, agent.secureProxy);
+      });
+      it('should be `true` when "https:" protocol is used', function () {
+        var agent = new HttpProxyAgent({ port: proxyPort, protocol: 'https:' });
+        assert.equal(true, agent.secureProxy);
+      });
+    });
   });
 
   describe('"http" module', function () {
