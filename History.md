@@ -1,3 +1,15 @@
+0.2.0 / 2013-09-16
+==================
+
+ - http-proxy-agent: update to `agent-base` v1.0.0 API
+ - http-proxy-agent: rename `secure` option to `secureProxy`
+ - http-proxy-agent: default the "port" to 80 if not set
+ - http-proxy-agent: use "extend" module
+ - test: refactor tests
+ - test: add 407 auth test
+ - test: add bad proxy info test
+ - test: add "secureProxy" option tests
+
 0.1.0 / 2013-09-03
 ==================
 
