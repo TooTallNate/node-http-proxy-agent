@@ -157,6 +157,33 @@ describe('HttpProxyAgent', function () {
         });
       });
     });
+    it('should proxy the query string of the request path', function (done) {
+      // set HTTP "request" event handler for this test
+      server.once('request', function (req, res) {
+        res.end(JSON.stringify({
+          url: req.url
+        }));
+      });
+
+      var proxy = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+      var agent = new HttpProxyAgent(proxy);
+
+      var opts = url.parse('http://127.0.0.1:' + serverPort + '/test?foo=bar&1=2');
+      opts.agent = agent;
+
+      http.get(opts, function (res) {
+        var data = '';
+        res.setEncoding('utf8');
+        res.on('data', function (b) {
+          data += b;
+        });
+        res.on('end', function () {
+          data = JSON.parse(data);
+          assert.equal('/test?foo=bar&1=2', data.url);
+          done();
+        });
+      });
+    });
     it('should receive the 407 authorization code on the `http.ClientResponse`', function (done) {
       // set a proxy authentication function for this test
       proxy.authenticate = function (req, fn) {
