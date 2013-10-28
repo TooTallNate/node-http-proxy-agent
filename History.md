@@ -1,3 +1,8 @@
+0.2.1 / 2013-10-28
+==================
+
+ - http-proxy-agent: properly proxy the query-string on request URLs (GH-1)
+
 0.2.0 / 2013-09-16
 ==================
 
