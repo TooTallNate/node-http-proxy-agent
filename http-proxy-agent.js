@@ -71,12 +71,11 @@ function connect (req, _opts, fn) {
 
   // change the `http.ClientRequest` instance's "path" field
   // to the absolute path of the URL that will be requested
-  var absolute = url.format({
-    protocol: 'http:',
-    hostname: opts.hostname || opts.host,
-    port: opts.port,
-    pathname: req.path
-  });
+  var parsed = url.parse(req.path);
+  if (null == parsed.protocol) parsed.protocol = 'http:';
+  if (null == parsed.hostname) parsed.hostname = opts.hostname || opts.host;
+  if (null == parsed.port) parsed.port = opts.port;
+  var absolute = url.format(parsed);
   req.path = absolute;
 
   // inject the `Proxy-Authorization` header if necessary
