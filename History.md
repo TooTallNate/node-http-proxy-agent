@@ -1,34 +1,34 @@
 0.2.1 / 2013-10-28
 ==================
 
- - http-proxy-agent: properly proxy the query-string on request URLs (GH-1)
+ * http-proxy-agent: properly proxy the query-string on request URLs (GH-1)
 
 0.2.0 / 2013-09-16
 ==================
 
- - http-proxy-agent: update to `agent-base` v1.0.0 API
- - http-proxy-agent: rename `secure` option to `secureProxy`
- - http-proxy-agent: default the "port" to 80 if not set
- - http-proxy-agent: use "extend" module
- - test: refactor tests
- - test: add 407 auth test
- - test: add bad proxy info test
- - test: add "secureProxy" option tests
+ * http-proxy-agent: update to `agent-base` v1.0.0 API
+ * http-proxy-agent: rename `secure` option to `secureProxy`
+ * http-proxy-agent: default the "port" to 80 if not set
+ * http-proxy-agent: use "extend" module
+ * test: refactor tests
+ * test: add 407 auth test
+ * test: add bad proxy info test
+ * test: add "secureProxy" option tests
 
 0.1.0 / 2013-09-03
 ==================
 
- - Add initial "Proxy-Authorization" Basic authentication support
+ * Add initial "Proxy-Authorization" Basic authentication support
 
 0.0.2 / 2013-07-11
 ==================
 
- - test: make tests pass, ensure valid IP addresses are returned
- - test: add tests
- - throw an Error when no proxy info is given
- - add support for passing options to net/tls .connect()
+ * test: make tests pass, ensure valid IP addresses are returned
+ * test: add tests
+ * throw an Error when no proxy info is given
+ * add support for passing options to net/tls .connect()
 
 0.0.1 / 2013-07-09
 ==================
 
- - Initial release
+ * Initial release
