@@ -43,6 +43,7 @@ function HttpProxyAgent (opts) {
     // result of a `url.parse()` call... we need to remove the `path` portion so
     // that `net.connect()` doesn't attempt to open that as a unix socket file.
     delete proxy.path;
+    delete proxy.pathname;
   }
 
   this.proxy = proxy;
