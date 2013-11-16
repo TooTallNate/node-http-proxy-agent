@@ -76,6 +76,11 @@ function connect (req, _opts, fn) {
   if (null == parsed.protocol) parsed.protocol = 'http:';
   if (null == parsed.hostname) parsed.hostname = opts.hostname || opts.host;
   if (null == parsed.port) parsed.port = opts.port;
+  if (parsed.port == defaults.port) {
+    // if port is 80, then we can remove the port so that the
+    // ":80" portion is not on the produced URL
+    delete parsed.port;
+  }
   var absolute = url.format(parsed);
   req.path = absolute;
 
