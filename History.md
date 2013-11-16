@@ -1,3 +1,11 @@
+
+0.2.2 / 2013-11-16
+==================
+
+  * http-proxy-agent: delete the `port` if it matches default port
+  * http-proxy-agent: don't mix in the `proxy` opts to the endpoint opts
+  * http-proxy-agent: delete `pathname` from the proxy opts as well
+
 0.2.1 / 2013-10-28
 ==================
 
