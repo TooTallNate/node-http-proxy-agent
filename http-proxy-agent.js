@@ -90,6 +90,7 @@ function connect (req, _opts, fn) {
     req.setHeader('Proxy-Authorization', 'Basic ' + new Buffer(auth).toString('base64'));
   }
 
+  // create a socket connection to the proxy server
   var socket;
   if (secureProxy) {
     socket = tls.connect(proxy);
