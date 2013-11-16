@@ -68,7 +68,7 @@ function connect (req, _opts, fn) {
   var secureProxy = this.secureProxy;
 
   // these `opts` are the connect options to connect to the destination endpoint
-  var opts = extend({}, proxy, defaults, _opts);
+  var opts = extend({}, defaults, _opts);
 
   // change the `http.ClientRequest` instance's "path" field
   // to the absolute path of the URL that will be requested
