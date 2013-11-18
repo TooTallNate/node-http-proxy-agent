@@ -99,6 +99,10 @@ describe('HttpProxyAgent', function () {
         var agent = new HttpProxyAgent({ port: proxyPort, protocol: 'https:' });
         assert.equal(true, agent.secureProxy);
       });
+      it('should be `true` when "https" protocol is used', function () {
+        var agent = new HttpProxyAgent({ port: proxyPort, protocol: 'https' });
+        assert.equal(true, agent.secureProxy);
+      });
     });
   });
 

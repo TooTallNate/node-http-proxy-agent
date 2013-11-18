@@ -32,7 +32,7 @@ function HttpProxyAgent (opts) {
   var proxy = extend({}, opts);
 
   // if `true`, then connect to the proxy server over TLS. defaults to `false`.
-  this.secureProxy = proxy.protocol ? proxy.protocol == 'https:' : false;
+  this.secureProxy = proxy.protocol ? /^https:?$/i.test(proxy.protocol) : false;
 
   // prefer `hostname` over `host`, and set the `port` if needed
   proxy.host = proxy.hostname || proxy.host;
