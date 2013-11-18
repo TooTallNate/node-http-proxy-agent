@@ -1,4 +1,9 @@
 
+0.2.3 / 2013-11-18
+==================
+
+  * https-proxy-agent: allow "https" without trailing colon
+
 0.2.2 / 2013-11-16
 ==================
 
