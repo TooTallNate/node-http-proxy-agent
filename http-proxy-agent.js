@@ -100,5 +100,22 @@ function connect (req, _opts, fn) {
     socket = net.connect(proxy);
   }
 
+  // at this point, the http ClientRequest's internal `_header` field might have
+  // already been set. If this is the case then we'll need to re-generate the
+  // string since we just changed the `req.path`
+  if (req._header) {
+    debug('regenerating stored HTTP header string for request');
+    req._header = null;
+    req._implicitHeader();
+    if (req.output && req.output.length > 0) {
+      debug('patching connection write() output buffer with updated header');
+      // the _header has already been queued to be written to the socket
+      var first = req.output[0];
+      var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
+      req.output[0] = req._header + first.substring(endOfHeaders);
+      debug('output buffer: %j', req.output);
+    }
+  }
+
   fn(null, socket);
 };

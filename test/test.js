@@ -261,6 +261,42 @@ describe('HttpProxyAgent', function () {
         done();
       });
     });
+    it('should work after the first tick of the `http.ClientRequest` instance', function (done) {
+      // set HTTP "request" event handler for this test
+      server.once('request', function (req, res) {
+        res.end(JSON.stringify(req.url));
+      });
+
+      var proxy = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+      var agent = new HttpProxyAgent(proxy);
+
+      var opts = url.parse('http://127.0.0.1:' + serverPort + '/test');
+      opts.agent = agent;
+
+      // defer the "connect()" function logic, since calling .end() before the
+      // "socket" event can cause weirdness since the HTTP header will have been
+      // cached and the HttpProxyAgent `req.path` patches won't be respected
+      var callback = agent.callback;
+      agent.callback = function (req, opts, fn) {
+        setTimeout(function () {
+          agent.callback = callback;
+          agent.callback(req, opts, fn);
+        }, 10);
+      };
+
+      http.get(opts, function (res) {
+        var data = '';
+        res.setEncoding('utf8');
+        res.on('data', function (b) {
+          data += b;
+        });
+        res.on('end', function () {
+          data = JSON.parse(data);
+          assert.equal('/test', data);
+          done();
+        });
+      });
+    });
   });
 
 });
