@@ -1,4 +1,11 @@
 
+0.2.4 / 2014-01-12
+==================
+
+  * http-proxy-agent: fix using the agent after the first tick of creating the ClientRequest
+  * http-proxy-agent: use "debug" module
+  * History: fix whitespace
+
 0.2.3 / 2013-11-18
 ==================
 
