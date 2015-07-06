@@ -1,4 +1,14 @@
 
+0.2.7 / 2015-07-06
+==================
+
+  * travis: ensure latest npm before testing
+  * travis: test node v0.8, v0.10, and v0.12
+  * README: use SVG for Travis-CI badge
+  * package: update "extend" to v3
+  * package: update "mocha" to v2
+  * package: update "debug" to v2
+
 0.2.6 / 2014-06-11
 ==================
 
