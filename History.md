@@ -1,4 +1,14 @@
 
+1.0.0 / 2015-07-10
+==================
+
+  * http-proxy-agent: use %o debug() formatter
+  * http-proxy-agent: remove `defaults` merging logic
+  * package: update "agent-base" to v2
+  * test: add an assert() call
+  * test: use ssl-cert-snakeoil self-signed SSL certs
+  * README: add note about node-https-proxy-agent
+
 0.2.7 / 2015-07-06
 ==================
 
