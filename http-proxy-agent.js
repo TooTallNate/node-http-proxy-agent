@@ -28,7 +28,7 @@ function HttpProxyAgent (opts) {
   if (!(this instanceof HttpProxyAgent)) return new HttpProxyAgent(opts);
   if ('string' == typeof opts) opts = url.parse(opts);
   if (!opts) throw new Error('an HTTP(S) proxy server `host` and `port` must be specified!');
-  debug('creating new HttpProxyAgent instance: %j', opts);
+  debug('creating new HttpProxyAgent instance: %o', opts);
   Agent.call(this, connect);
 
   var proxy = extend({}, opts);
@@ -102,7 +102,7 @@ function connect (req, opts, fn) {
       var first = req.output[0];
       var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
       req.output[0] = req._header + first.substring(endOfHeaders);
-      debug('output buffer: %j', req.output);
+      debug('output buffer: %o', req.output);
     }
   }
 
