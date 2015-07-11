@@ -6,6 +6,9 @@ http-proxy-agent
 This module provides an `http.Agent` implementation that connects to a specified
 HTTP or HTTPS proxy server, and can be used with the built-in `http` module.
 
+__Note:__ For HTTP proxy usage with the `https` module, check out
+[`node-https-proxy-agent`](https://github.com/TooTallNate/node-https-proxy-agent).
+
 Installation
 ------------
 
