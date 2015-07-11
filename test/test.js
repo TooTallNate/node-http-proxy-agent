@@ -143,6 +143,7 @@ describe('HttpProxyAgent', function () {
       proxy = url.parse(proxy);
       proxy.rejectUnauthorized = false;
       var agent = new HttpProxyAgent(proxy);
+      assert.equal(true, agent.secureProxy);
 
       var opts = url.parse('http://127.0.0.1:' + serverPort);
       opts.agent = agent;
