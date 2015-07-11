@@ -53,24 +53,13 @@ function HttpProxyAgent (opts) {
 inherits(HttpProxyAgent, Agent);
 
 /**
- * Default options for the "connect" opts object.
- */
-
-var defaults = { port: 80 };
-
-/**
  * Called when the node-core HTTP client library is creating a new HTTP request.
  *
  * @api public
  */
 
-function connect (req, _opts, fn) {
-
+function connect (req, opts, fn) {
   var proxy = this.proxy;
-  var secureProxy = this.secureProxy;
-
-  // these `opts` are the connect options to connect to the destination endpoint
-  var opts = extend({}, defaults, _opts);
 
   // change the `http.ClientRequest` instance's "path" field
   // to the absolute path of the URL that will be requested
@@ -78,7 +67,7 @@ function connect (req, _opts, fn) {
   if (null == parsed.protocol) parsed.protocol = 'http:';
   if (null == parsed.hostname) parsed.hostname = opts.hostname || opts.host;
   if (null == parsed.port) parsed.port = opts.port;
-  if (parsed.port == defaults.port) {
+  if (parsed.port == 80) {
     // if port is 80, then we can remove the port so that the
     // ":80" portion is not on the produced URL
     delete parsed.port;
@@ -94,7 +83,7 @@ function connect (req, _opts, fn) {
 
   // create a socket connection to the proxy server
   var socket;
-  if (secureProxy) {
+  if (this.secureProxy) {
     socket = tls.connect(proxy);
   } else {
     socket = net.connect(proxy);
