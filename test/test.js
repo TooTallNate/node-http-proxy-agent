@@ -10,6 +10,11 @@ var https = require('https');
 var assert = require('assert');
 var Proxy = require('proxy');
 var HttpProxyAgent = require('../');
+try {
+  var Kerberos = require('kerberos');
+} catch(er) {
+  Kerberos = null;
+}
 
 describe('HttpProxyAgent', function () {
 
@@ -254,7 +259,6 @@ describe('HttpProxyAgent', function () {
 
       var opts = url.parse('http://nodejs.org');
       opts.agent = agent;
-
       var req = http.get(opts);
       req.once('error', function (err) {
         assert.equal('ECONNREFUSED', err.code);
@@ -296,6 +300,39 @@ describe('HttpProxyAgent', function () {
           assert.equal('/test', data);
           done();
         });
+      });
+    });
+
+
+    describe('Kerberos authentication support', function() {
+      var tests = [
+	['should allow Kerberos to be enabled', function() {
+	  var proxyUri = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+	  var proxyOpts = url.parse(proxyUri);
+	  proxyOpts.use_kerberos = 1;
+	  var agent = new HttpProxyAgent(proxyOpts);
+	}],
+	['should be able to pull nodejs.org', function(done) {
+	  var proxyUri = process.env.HTTP_PROXY || process.env.http_proxy || 'http://127.0.0.1:' + proxyPort;
+	  var proxyOpts = url.parse(proxyUri);
+	  proxyOpts.use_kerberos = 1;
+	  var agent = new HttpProxyAgent(proxyOpts);
+	  var opts = url.parse('http://nodejs.org/');
+	  opts.agent = agent;
+
+	  http.get(opts, function (res) {
+	    assert(res.statusCode == 301);
+            done();
+	  });
+	}]
+      ];
+
+      tests.forEach(function(test) {
+	if(Kerberos) {
+	  it(test[0], test[1]);
+	} else {
+	  it.skip(test[0], test[1]);
+	}
       });
     });
   });

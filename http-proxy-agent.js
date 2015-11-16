@@ -10,6 +10,11 @@ var extend = require('extend');
 var Agent = require('agent-base');
 var inherits = require('util').inherits;
 var debug = require('debug')('http-proxy-agent');
+try {
+  var Kerberos = require('kerberos');
+} catch(er) {
+  Kerberos = null;
+}
 
 /**
  * Module exports.
@@ -48,9 +53,70 @@ function HttpProxyAgent (opts) {
     delete proxy.pathname;
   }
 
+  if (proxy.use_kerberos) {
+    if(!Kerberos) {
+      throw new Error('attemping to use Kerberos proxy authencation but kerberos module is not installed!');
+    }
+    proxy.kerberosServiceIdentifier = 'HTTP@' + proxy.hostname;
+  }
+
   this.proxy = proxy;
 }
 inherits(HttpProxyAgent, Agent);
+
+
+/**
+ * Called to obtain a GSS Token to be added to the HTTP Proxy-Authorization header
+ * for Kerberos authentication
+ *
+ * @api private
+ */
+function getGSSToken(serviceIdentifier, fn) {
+  var kerberos = new Kerberos.Kerberos();
+  kerberos.authGSSClientInit(
+    serviceIdentifier,
+    Kerberos.Kerberos.GSS_C_MUTUAL_FLAG,
+    function(err, context) {
+      if(err) {
+        return fn(err);
+      }
+
+      return kerberos.authGSSClientStep(context, "", function(err, result) {
+        if(err) {
+	  fn(err);
+        } else {
+          fn(null, context, result);
+	}
+      });
+    });
+}
+
+
+/**
+ * Called when authorizaiton headers have been added to the HTTP request.
+ *
+ * @api private
+ */
+function finishedRequestAuth(req, socket, fn) {
+  // at this point, the http ClientRequest's internal `_header` field might have
+  // already been set. If this is the case then we'll need to re-generate the
+  // string since we just changed the `req.path`
+  if (req._header) {
+    debug('regenerating stored HTTP header string for request');
+    req._header = null;
+    req._implicitHeader();
+    if (req.output && req.output.length > 0) {
+      debug('patching connection write() output buffer with updated header');
+      // the _header has already been queued to be written to the socket
+      var first = req.output[0];
+      var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
+      req.output[0] = req._header + first.substring(endOfHeaders);
+      debug('output buffer: %o', req.output);
+    }
+  }
+  fn(null, socket);
+};
+
 
 /**
  * Called when the node-core HTTP client library is creating a new HTTP request.
@@ -75,12 +141,6 @@ function connect (req, opts, fn) {
   var absolute = url.format(parsed);
   req.path = absolute;
 
-  // inject the `Proxy-Authorization` header if necessary
-  var auth = proxy.auth;
-  if (auth) {
-    req.setHeader('Proxy-Authorization', 'Basic ' + new Buffer(auth).toString('base64'));
-  }
-
   // create a socket connection to the proxy server
   var socket;
   if (this.secureProxy) {
@@ -89,22 +149,20 @@ function connect (req, opts, fn) {
     socket = net.connect(proxy);
   }
 
-  // at this point, the http ClientRequest's internal `_header` field might have
-  // already been set. If this is the case then we'll need to re-generate the
-  // string since we just changed the `req.path`
-  if (req._header) {
-    debug('regenerating stored HTTP header string for request');
-    req._header = null;
-    req._implicitHeader();
-    if (req.output && req.output.length > 0) {
-      debug('patching connection write() output buffer with updated header');
-      // the _header has already been queued to be written to the socket
-      var first = req.output[0];
-      var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
-      req.output[0] = req._header + first.substring(endOfHeaders);
-      debug('output buffer: %o', req.output);
+  // inject the `Proxy-Authorization` header if necessary
+  if (proxy.use_kerberos && proxy.kerberosServiceIdentifier) {
+    getGSSToken(proxy.kerberosServiceIdentifier, function(err, requestContext, gssResult) {
+      req._header = null;
+      req.setHeader('Proxy-Authorization', 'Negotiate ' + requestContext.response);
+      req._implicitHeader();
+      finishedRequestAuth(req, socket, fn);
+    });
+  } else {
+    var auth = proxy.auth;
+    if (auth) {
+      req.setHeader('Proxy-Authorization', 'Basic ' + new Buffer(auth).toString('base64'));
     }
+    // No authorization may have been added but continue processing.
+    finishedRequestAuth(req, socket, fn);
   }
-
-  fn(null, socket);
 };

@@ -44,6 +44,13 @@ http.get(opts, function (res) {
   console.log('"response" event!', res.headers);
   res.pipe(process.stdout);
 });
+
+// To use authentication you can pass the auth paramter to the constructor
+// or set use_kerberos to use Kerberos/GSSAPI authentication to the proxy
+// for example to enable kerberos:
+var agent = new HttpProxyAgent(proxy);
+proxy.use_kerberos = true;
+
 ```
 
 

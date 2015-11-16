@@ -23,8 +23,11 @@
   },
   "dependencies": {
     "agent-base": "2",
-    "extend": "3",
-    "debug": "2"
+    "debug": "2",
+    "extend": "3"
+  },
+  "optionalDependencies": {
+    "kerberos": "~0.0.17"
   },
   "devDependencies": {
     "mocha": "2",
