@@ -28,7 +28,7 @@ function HttpProxyAgent (opts) {
   if ('string' == typeof opts) opts = url.parse(opts);
   if (!opts) throw new Error('an HTTP(S) proxy server `host` and `port` must be specified!');
   debug('creating new HttpProxyAgent instance: %o', opts);
-  Agent.call(this, connect);
+  Agent.call(this, opts);
 
   var proxy = Object.assign({}, opts);
 
@@ -57,7 +57,7 @@ inherits(HttpProxyAgent, Agent);
  * @api public
  */
 
-function connect (req, opts, fn) {
+HttpProxyAgent.prototype.callback = function connect (req, opts, fn) {
   var proxy = this.proxy;
 
   // change the `http.ClientRequest` instance's "path" field
