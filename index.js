@@ -48,6 +48,7 @@ function HttpProxyAgent (opts) {
   }
 
   this.proxy = proxy;
+  this.defaultPort = 80;
 }
 inherits(HttpProxyAgent, Agent);
 
