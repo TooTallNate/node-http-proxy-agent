@@ -86,6 +86,11 @@ describe('HttpProxyAgent', function () {
       assert.equal('127.0.0.1', agent.proxy.host);
       assert.equal(proxyPort, agent.proxy.port);
     });
+    it('should set a `defaultPort` property', function () {
+      var opts = url.parse("http://127.0.0.1:" + proxyPort);
+      var agent = new HttpProxyAgent(opts);
+      assert.equal(80, agent.defaultPort);
+    });
     describe('secureProxy', function () {
       it('should default to `false`', function () {
         var agent = new HttpProxyAgent({ port: proxyPort });
@@ -294,6 +299,29 @@ describe('HttpProxyAgent', function () {
         res.on('end', function () {
           data = JSON.parse(data);
           assert.equal('/test', data);
+          done();
+        });
+      });
+    });
+    it('should not send a port number for the default port', function (done) {
+      server.once('request', function (req, res) {
+        res.end(JSON.stringify(req.headers));
+      });
+      var proxy = process.env.HTTP_PROXY || process.env.http_proxy || "http://127.0.0.1:" + proxyPort;
+      proxy = url.parse(proxy);
+      var agent = new HttpProxyAgent(proxy);
+      agent.defaultPort = serverPort;
+      var opts = url.parse("http://127.0.0.1:" + serverPort);
+      opts.agent = agent;
+      http.get(opts, function(res) {
+        var data = "";
+        res.setEncoding("utf8");
+        res.on("data", function(b) {
+          data += b;
+        });
+        res.on("end", function() {
+          data = JSON.parse(data);
+          assert.equal("127.0.0.1", data.host);
           done();
         });
       });
