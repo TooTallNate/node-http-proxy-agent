@@ -3,6 +3,9 @@
   "version": "2.1.0",
   "description": "An HTTP(s) proxy `http.Agent` implementation for HTTP",
   "main": "./index.js",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "test": "mocha --reporter spec"
   },
