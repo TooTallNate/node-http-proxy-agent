@@ -98,12 +98,21 @@ HttpProxyAgent.prototype.callback = function connect (req, opts, fn) {
     req._header = null;
     req._implicitHeader();
     if (req.output && req.output.length > 0) {
+      // Node < 12
       debug('patching connection write() output buffer with updated header');
       // the _header has already been queued to be written to the socket
       var first = req.output[0];
       var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
       req.output[0] = req._header + first.substring(endOfHeaders);
       debug('output buffer: %o', req.output);
+    } else if (req.outputData && req.outputData.length > 0) {
+      // Node >= 12
+      debug('patching connection write() output buffer with updated header');
+      var first = req.outputData[0].data;
+      // the _header has already been queued to be written to the socket
+      var endOfHeaders = first.indexOf('\r\n\r\n') + 4;
+      req.outputData[0].data = req._header + first.substring(endOfHeaders);
+      debug('output buffer: %o', req.outputData[0].data);
     }
   }
 

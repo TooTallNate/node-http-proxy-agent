@@ -40,6 +40,10 @@ describe('HttpProxyAgent', function () {
     });
   });
 
+  beforeEach(function () {
+    server.removeAllListeners('request');
+  });
+
   before(function (done) {
     // setup SSL HTTP proxy server
     var options = {
