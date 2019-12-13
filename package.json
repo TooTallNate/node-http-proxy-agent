@@ -35,7 +35,6 @@
   },
   "devDependencies": {
     "@types/debug": "4",
-    "@types/jest": "^24.0.23",
     "@types/node": "^12.12.11",
     "@typescript-eslint/eslint-plugin": "1.6.0",
     "@typescript-eslint/parser": "1.1.0",
@@ -46,11 +45,9 @@
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-jsx-a11y": "6.2.1",
     "eslint-plugin-react": "7.12.4",
-    "jest": "^24.9.0",
     "mocha": "^6.2.2",
     "proxy": "1",
     "rimraf": "^3.0.0",
-    "ts-jest": "^24.1.0",
     "typescript": "^3.5.3"
   },
   "engines": {
