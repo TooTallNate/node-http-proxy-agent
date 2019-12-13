@@ -11,13 +11,19 @@ function createHttpProxyAgent(
 }
 
 namespace createHttpProxyAgent {
-	export type HttpProxyAgentOptions = AgentOptions &
-		Url &
-		net.NetConnectOpts &
-		tls.ConnectionOptions & {
-			secureProxy?: boolean;
-			port?: string | number | null;
-		};
+	export interface HttpProxyAgentOptions
+		extends AgentOptions,
+			Partial<
+				Omit<
+					Url & net.NetConnectOpts & tls.ConnectionOptions,
+					'host' | 'port' | 'path'
+				>
+			> {
+		secureProxy?: boolean;
+		host?: string | null;
+		path?: string | null;
+		port?: string | number | null;
+	}
 
 	export const HttpProxyAgent = _HttpProxyAgent;
 

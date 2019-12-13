@@ -30,7 +30,7 @@ export default class HttpProxyAgent extends Agent {
 	constructor(_opts: string | HttpProxyAgentOptions) {
 		let opts: HttpProxyAgentOptions;
 		if (typeof _opts === 'string') {
-			opts = url.parse(_opts) as HttpProxyAgentOptions;
+			opts = url.parse(_opts);
 		} else {
 			opts = _opts;
 		}
@@ -52,11 +52,12 @@ export default class HttpProxyAgent extends Agent {
 
 		// Prefer `hostname` over `host`, and set the `port` if needed.
 		proxy.host = proxy.hostname || proxy.host;
-
-		// XXX: For some reason, TS types `proxy.port` as `never` and
-		// doesn't allow assignment. Ignore for now.
-		// @ts-ignore
-		proxy.port = +proxy.port || (this.secureProxy ? 443 : 80);
+		if (typeof proxy.port === 'string') {
+			proxy.port = parseInt(proxy.port, 10);
+		}
+		if (!proxy.port && proxy.host) {
+			proxy.port = this.secureProxy ? 443 : 80;
+		}
 
 		if (proxy.host && proxy.path) {
 			// If both a `host` and `path` are specified then it's most likely
@@ -117,10 +118,10 @@ export default class HttpProxyAgent extends Agent {
 		let socket: net.Socket;
 		if (secureProxy) {
 			debug('Creating `tls.Socket`: %o', opts);
-			socket = tls.connect(proxy);
+			socket = tls.connect(proxy as tls.ConnectionOptions);
 		} else {
 			debug('Creating `net.Socket`: %o', opts);
-			socket = net.connect(proxy);
+			socket = net.connect(proxy as net.NetConnectOpts);
 		}
 
 		// At this point, the http ClientRequest's internal `_header` field
