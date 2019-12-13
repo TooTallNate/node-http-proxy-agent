@@ -17,6 +17,10 @@ interface HttpProxyAgentClientRequest extends ClientRequest {
 	_implicitHeader(): void;
 }
 
+function isHTTPS(protocol?: string | null): boolean {
+	return typeof protocol === 'string' ? /^https:?$/i.test(protocol) : false;
+}
+
 /**
  * The `HttpProxyAgent` implements an HTTP Agent subclass that connects
  * to the specified "HTTP proxy server" in order to proxy HTTP requests.
@@ -46,11 +50,7 @@ export default class HttpProxyAgent extends Agent {
 
 		// If `true`, then connect to the proxy server over TLS.
 		// Defaults to `false`.
-		this.secureProxy =
-			opts.secureProxy ||
-			(typeof proxy.protocol === 'string'
-				? /^https:?$/i.test(proxy.protocol)
-				: false);
+		this.secureProxy = opts.secureProxy || isHTTPS(proxy.protocol);
 
 		// Prefer `hostname` over `host`, and set the `port` if needed.
 		proxy.host = proxy.hostname || proxy.host;
