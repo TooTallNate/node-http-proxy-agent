@@ -135,6 +135,13 @@ describe('HttpProxyAgent', function() {
 				});
 				assert.equal(true, agent.secureProxy);
 			});
+			it('should support a `defaultPort` option', function() {
+				let agent = new HttpProxyAgent({
+					port: proxyPort,
+					secureProxy: true
+				});
+				assert.equal(true, agent.secureProxy);
+			});
 		});
 	});
 

@@ -46,9 +46,11 @@ export default class HttpProxyAgent extends Agent {
 
 		// If `true`, then connect to the proxy server over TLS.
 		// Defaults to `false`.
-		this.secureProxy = proxy.protocol
-			? /^https:?$/i.test(proxy.protocol)
-			: false;
+		this.secureProxy =
+			opts.secureProxy ||
+			(typeof proxy.protocol === 'string'
+				? /^https:?$/i.test(proxy.protocol)
+				: false);
 
 		// Prefer `hostname` over `host`, and set the `port` if needed.
 		proxy.host = proxy.hostname || proxy.host;
