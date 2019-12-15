@@ -25,6 +25,7 @@ namespace createHttpProxyAgent {
 		port?: string | number | null;
 	}
 
+	export type HttpProxyAgent = _HttpProxyAgent;
 	export const HttpProxyAgent = _HttpProxyAgent;
 
 	createHttpProxyAgent.prototype = _HttpProxyAgent.prototype;

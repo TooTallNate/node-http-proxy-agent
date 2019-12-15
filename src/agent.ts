@@ -119,10 +119,10 @@ export default class HttpProxyAgent extends Agent {
 		// create a socket connection to the proxy server
 		let socket: net.Socket;
 		if (secureProxy) {
-			debug('Creating `tls.Socket`: %o', opts);
+			debug('Creating `tls.Socket`: %o', proxy);
 			socket = tls.connect(proxy as tls.ConnectionOptions);
 		} else {
-			debug('Creating `net.Socket`: %o', opts);
+			debug('Creating `net.Socket`: %o', proxy);
 			socket = net.connect(proxy as net.NetConnectOpts);
 		}
 
