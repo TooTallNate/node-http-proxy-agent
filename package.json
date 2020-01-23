@@ -30,7 +30,7 @@
     "url": "https://github.com/TooTallNate/node-http-proxy-agent/issues"
   },
   "dependencies": {
-    "agent-base": "https://files-3xmau8uhp.n8.io",
+    "agent-base": "6",
     "debug": "4"
   },
   "devDependencies": {
