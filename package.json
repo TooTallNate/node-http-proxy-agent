@@ -2,8 +2,8 @@
   "name": "http-proxy-agent",
   "version": "4.0.0",
   "description": "An HTTP(s) proxy `http.Agent` implementation for HTTP",
-  "main": "dist/index",
-  "typings": "dist/index",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -30,6 +30,7 @@
     "url": "https://github.com/TooTallNate/node-http-proxy-agent/issues"
   },
   "dependencies": {
+    "@tootallnate/once": "1",
     "agent-base": "6",
     "debug": "4"
   },

@@ -2,6 +2,7 @@ import net from 'net';
 import tls from 'tls';
 import url from 'url';
 import createDebug from 'debug';
+import once from '@tootallnate/once';
 import { Agent, ClientRequest, RequestOptions } from 'agent-base';
 import { HttpProxyAgentOptions } from '.';
 
@@ -79,10 +80,10 @@ export default class HttpProxyAgent extends Agent {
 	 *
 	 * @api protected
 	 */
-	callback(
+	async callback(
 		req: HttpProxyAgentClientRequest,
 		opts: RequestOptions
-	): net.Socket {
+	): Promise<net.Socket> {
 		const { proxy, secureProxy } = this;
 		const parsed = url.parse(req.path);
 
@@ -116,7 +117,7 @@ export default class HttpProxyAgent extends Agent {
 			);
 		}
 
-		// create a socket connection to the proxy server
+		// Create a socket connection to the proxy server.
 		let socket: net.Socket;
 		if (secureProxy) {
 			debug('Creating `tls.Socket`: %o', proxy);
@@ -156,6 +157,12 @@ export default class HttpProxyAgent extends Agent {
 				debug('Output buffer: %o', req.outputData[0].data);
 			}
 		}
+
+		// Wait for the socket's `connect` event, so that this `callback()`
+		// function throws instead of the `http` request machinery. This is
+		// important for i.e. `PacProxyAgent` which determines a failed proxy
+		// connection via the `callback()` function throwing.
+		await once(socket, 'connect');
 
 		return socket;
 	}
