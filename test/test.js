@@ -27,12 +27,6 @@ describe('HttpProxyAgent', function() {
 	before(function(done) {
 		// setup HTTP proxy server
 		proxy = Proxy();
-		/*
-		proxy = net.createServer((socket) => {
-			socket.setEncoding('utf8');
-			socket.on('data', console.log);
-		});
-		*/
 		proxy.listen(function() {
 			proxyPort = proxy.address().port;
 			done();
