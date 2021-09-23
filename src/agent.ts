@@ -102,7 +102,7 @@ export default class HttpProxyAgent extends Agent {
 		if (parsed.port === '80') {
 			// if port is 80, then we can remove the port so that the
 			// ":80" portion is not on the produced URL
-			delete parsed.port;
+			parsed.port = '';
 		}
 
 		// Change the `http.ClientRequest` instance's "path" field
